@@ -14,6 +14,7 @@ usr/bin/mysql_plugin
 usr/bin/mysqlbinlog
 usr/bin/mysqld_multi
 usr/bin/mysqld_safe
+usr/bin/mysql-systemd
 usr/bin/mysqltest
 usr/bin/perror
 usr/bin/replace
@@ -48,4 +49,5 @@ usr/share/man/man8/mysqld.8
 usr/share/mysql
 etc/xinetd.d/mysqlchk
 etc/default/mysql
+debian/extra/mysql.bootstrap etc/default/
 libgalera_smm.so usr/lib/galera3
