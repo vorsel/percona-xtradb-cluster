@@ -30,7 +30,7 @@
 */
 
 #include "my_config.h"
-
+#include "my_static.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdarg.h>
@@ -42,7 +42,17 @@
 #include <syscall.h>
 #endif
 #include <time.h>
-
+#include <elf.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#if __x86_64__
+#  define ElfW(type) Elf64_##type
+#else
+#  define ElfW(type) Elf32_##type
+#endif
 #include "my_inttypes.h"
 #include "my_macros.h"
 #include "my_stacktrace.h"
@@ -68,14 +78,13 @@
 #define UNW_LOCAL_ONLY
 #include <libunwind.h>
 #endif
-
+#include <coredumper/coredumper.h>
 #ifdef __linux__
 /* __bss_start doesn't seem to work on FreeBSD and doesn't exist on OSX/Solaris.
  */
 static const char *heap_start;
 extern char *__bss_start;
 #endif /* __linux */
-
 static inline bool ptr_sane(const char *p MY_ATTRIBUTE((unused)),
                             const char *heap_end MY_ATTRIBUTE((unused))) {
 #ifdef __linux__
@@ -258,7 +267,45 @@ static void my_demangle_symbols(char **addrs, int n) {
 }
 
 #endif /* HAVE_ABI_CXA_DEMANGLE */
-
+void my_print_buildID()
+{
+  FILE *thefile;
+  struct stat statbuf;
+  ElfW(Ehdr) *ehdr = 0;
+  ElfW(Phdr) *phdr = 0;
+  ElfW(Nhdr) *nhdr = 0;
+  if (!(thefile = fopen(my_progname, "r"))) {
+    perror(my_progname);
+    exit(EXIT_FAILURE);
+  }
+  if (fstat(fileno(thefile), &statbuf) < 0) {
+    perror(my_progname);
+    exit(EXIT_FAILURE);
+  }
+  ehdr = (ElfW(Ehdr) *)mmap(0, statbuf.st_size,
+    PROT_READ|PROT_WRITE, MAP_PRIVATE, fileno(thefile), 0);
+  phdr = (ElfW(Phdr) *)(ehdr->e_phoff + (size_t)ehdr);
+  while (phdr->p_type != PT_NOTE)
+  {
+    ++phdr;
+  }
+  nhdr = (ElfW(Nhdr) *)(phdr->p_offset + (size_t)ehdr);
+  while (nhdr->n_type != NT_GNU_BUILD_ID)
+  {
+    nhdr = (ElfW(Nhdr) *)((size_t)nhdr + sizeof(ElfW(Nhdr)) + nhdr->n_namesz + nhdr->n_descsz);
+  }
+  unsigned char * build_id = (unsigned char *)malloc(nhdr->n_descsz);
+  memcpy(build_id, (void *)((size_t)nhdr + sizeof(ElfW(Nhdr)) + nhdr->n_namesz), nhdr->n_descsz);
+  my_safe_printf_stderr("Build ID: ");
+  char buff[3];
+  for (uint i = 0 ; i < nhdr->n_descsz ; ++i)
+  {
+    snprintf(buff, sizeof(buff), "%02hhx", build_id[i]);
+    my_safe_printf_stderr("%s", buff);
+  }
+  free(build_id);
+  my_safe_printf_stderr("\n");
+}
 void my_print_stacktrace(const uchar *stack_bottom, ulong thread_stack) {
 #if defined(__FreeBSD__)
   static char procname_buffer[2048];
@@ -301,12 +348,24 @@ void my_print_stacktrace(const uchar *stack_bottom, ulong thread_stack) {
 
 /* Produce a core for the thread */
 void my_write_core(int sig) {
-  signal(sig, SIG_DFL);
-  pthread_kill(my_thread_self(), sig);
-#if defined(P_MYID)
-  /* On Solaris, the above kill is not enough */
-  sigsend(P_PID, P_MYID, sig);
-#endif
+  int ret=0;
+  pid_t tid;
+  tid = (pid_t)syscall(SYS_gettid);
+  char corefile[100];
+  sprintf(corefile, "core.%d", tid);
+
+//   signal(sig, SIG_DFL);
+//   pthread_kill(my_thread_self(), sig);
+// #if defined(P_MYID)
+//   /* On Solaris, the above kill is not enough */
+//   sigsend(P_PID, P_MYID, sig);
+// #endif
+
+  ret = WriteCoreDump(corefile);
+  if(ret != 0)
+  {
+    my_safe_printf_stderr("Error writting coredump: %d Signal: %d\n", ret, sig);
+  }
 }
 
 #else /* _WIN32*/

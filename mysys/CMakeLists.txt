@@ -179,6 +179,8 @@ ADD_CONVENIENCE_LIBRARY(mysys ${MYSYS_SOURCES}
   ${SSL_LIBRARIES}
   )
 
+TARGET_LINK_LIBRARIES(mysys coredumper)
+TARGET_LINK_LIBRARIES(mysys_objlib coredumper)
 # Need explicit pthread for gcc -fsanitize=address
 IF(CMAKE_USE_PTHREADS_INIT AND CMAKE_C_FLAGS MATCHES "-fsanitize=")
   TARGET_LINK_LIBRARIES(mysys pthread)

@@ -123,6 +123,11 @@ extern "C" void handle_fatal_signal(int sig) {
       "Most likely, you have hit a bug, but this error can also "
       "be caused by malfunctioning hardware.\n");
 
+  my_safe_printf_stderr("\n");
+  my_print_buildID();
+  my_safe_printf_stderr("Server Version: %s %s\n\n", server_version,
+                        MYSQL_COMPILATION_COMMENT);
+
 #ifdef HAVE_STACKTRACE
   THD *thd = current_thd;
 

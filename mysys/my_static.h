@@ -41,7 +41,7 @@ extern char curr_dir[FN_REFLEN], home_dir_buff[FN_REFLEN];
 
 extern USED_MEM *my_once_root_block;
 extern uint my_once_extra;
-
+extern const char *my_progname;
 extern struct st_my_file_info my_file_info_default[MY_NFILE];
 
 #endif /* MYSYS_MY_STATIC_INCLUDED */

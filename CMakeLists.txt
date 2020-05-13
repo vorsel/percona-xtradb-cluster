@@ -511,6 +511,8 @@ INCLUDE(mysqlgcs)
 INCLUDE(curl)
 INCLUDE(prepend_append_cflags_if_supported)
 INCLUDE(rapidjson)
+INCLUDE(coredumper)
+
 
 OPTION(WITH_JEMALLOC "Use jemalloc rather than builtin malloc/free etc." OFF)
 IF(WITH_JEMALLOC)
@@ -1202,6 +1204,7 @@ IF(BUILD_BUNDLED_ZSTD)
   ADD_SUBDIRECTORY(extra/zstd)
 ENDIF()
 
+MYSQL_COREDUMPER()
 # Add system openssl.
 MYSQL_CHECK_SSL()
 MYSQL_CHECK_SSL_DLLS()
