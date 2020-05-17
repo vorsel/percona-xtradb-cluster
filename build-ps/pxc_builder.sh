@@ -129,7 +129,7 @@ get_sources(){
             git clean -xdf
             git checkout "$BRANCH"
         fi
-        rm -rf wsrep-lib || true
+        rm -rf wsrep-lib extra/coredumper || true
         rm -rf percona-xtradb-cluster-galera || true
         git submodule deinit -f . || true
         git submodule init
@@ -202,6 +202,7 @@ get_sources(){
     tar xzf ${EXPORTED_TAR}
     rm -f ${EXPORTED_TAR}
     # add git submodules because make dist uses git archive which doesn't include them
+    rsync -av ${WORKDIR}/percona-xtradb-cluster/extra/coredumper/ ${PXCDIR}/extra/coredumper --exclude .git
     rsync -av ${WORKDIR}/percona-xtradb-cluster/percona-xtradb-cluster-galera/ ${PXCDIR}/percona-xtradb-cluster-galera --exclude .git
     rsync -av ${WORKDIR}/percona-xtradb-cluster/wsrep-lib/ ${PXCDIR}/wsrep-lib --exclude .git
 

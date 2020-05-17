@@ -679,6 +679,7 @@ mkdir debug
            -DFEATURE_SET="%{feature_set}" \
            -DCOMPILATION_COMMENT="%{compilation_comment_debug}" \
            -DWITH_WSREP=ON \
+           -DBUILD_SHARED_LIBS=OFF \
            -DWITH_INNODB_DISALLOW_WRITES=ON \
            -DWITH_EMBEDDED_SERVER=0 \
            -DWITH_EMBEDDED_SHARED_LIBRARY=0 \
@@ -718,6 +719,7 @@ mkdir release
            -DFEATURE_SET="%{feature_set}" \
            -DCOMPILATION_COMMENT="%{compilation_comment_release}" \
            -DWITH_WSREP=ON \
+           -DBUILD_SHARED_LIBS=OFF \
            -DWITH_INNODB_DISALLOW_WRITES=ON \
            -DWITH_EMBEDDED_SERVER=0 \
            -DWITH_EMBEDDED_SHARED_LIBRARY=0 \
@@ -1503,6 +1505,10 @@ fi
 %attr(755, root, root) %{_sysconfdir}/init.d/mysql
 %endif
 %attr(0755,nobody,nobody) %dir %{_sharedstatedir}/galera
+/usr/lib/libcoredumper.a
+/usr/cmake/coredumper-relwithdebinfo.cmake
+/usr/cmake/coredumper.cmake
+/usr/include/coredumper/coredumper.h
 # This is a symlink
 %{_libdir}/libgalera_smm.so
 %{_libdir}/galera4/libgalera_smm.so
