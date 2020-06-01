@@ -1437,6 +1437,7 @@ fi
 %attr(755, root, root) %{_bindir}/pyclustercheck
 %attr(755, root, root) %{_bindir}/innochecksum
 %attr(755, root, root) %{_bindir}/ibd2sdi
+%attr(755, root, root) %{_bindir}/comp_err
 %attr(755, root, root) %{_bindir}/my_print_defaults
 %attr(755, root, root) %{_bindir}/myisam_ftdump
 %attr(755, root, root) %{_bindir}/myisamchk
