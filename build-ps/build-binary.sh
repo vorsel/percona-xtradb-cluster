@@ -419,7 +419,7 @@ fi
             -DWITH_BOOST="$TARGETDIR/libboost" \
             -DMYSQL_SERVER_SUFFIX=".$TAG" \
             -DWITH_WSREP=ON \
-            -DWITH_LDAP=ON \
+            -DWITH_LDAP=system \
             -DWITH_UNIT_TESTS=0 \
             -DWITH_DEBUG=ON \
             $WITH_MECAB_OPTION $OPENSSL_INCLUDE $OPENSSL_LIBRARY $CRYPTO_LIBRARY
@@ -454,6 +454,7 @@ fi
             -DWITH_BOOST="$TARGETDIR/libboost" \
             -DMYSQL_SERVER_SUFFIX=".$TAG" \
             -DWITH_WSREP=ON \
+            -DWITH_LDAP=system \
             -DWITH_UNIT_TESTS=0 \
             $WITH_MECAB_OPTION $OPENSSL_INCLUDE $OPENSSL_LIBRARY $CRYPTO_LIBRARY
 
