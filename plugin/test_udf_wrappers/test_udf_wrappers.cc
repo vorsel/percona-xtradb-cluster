@@ -5,11 +5,6 @@
 
 namespace {
 
-//
-// GET_BINLOG_BY_GTID()
-// This MySQL function accepts a GTID and returns the name of the binlog file
-// that contains this GTID.
-//
 class wrapped_udf_string_impl {
  public:
   wrapped_udf_string_impl(mysqlpp::udf_context &ctx) {
