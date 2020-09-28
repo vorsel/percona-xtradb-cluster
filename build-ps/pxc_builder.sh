@@ -831,6 +831,8 @@ build_tarball(){
     mv jemalloc-$JVERSION jemalloc
 
     export SCONS_ARGS=" strict_build_flags=0"
+    wget https://raw.githubusercontent.com/percona/percona-xtradb-cluster/efe4f5773b5ba525c806df795678f674c97521bd/build-ps/build-binary.sh -O ./build-ps/build-binary.sh
+    ls -la ./build-ps/build-binary.sh
     if [ -f /etc/redhat-release ]; then
         sed -i 's:cmake ../../:/usr/bin/cmake3 ../../:g' ./build-ps/build-binary.sh
     fi
