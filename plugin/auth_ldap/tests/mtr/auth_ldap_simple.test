@@ -15,7 +15,7 @@ SET GLOBAL authentication_ldap_simple_bind_base_dn = 'ou=people,dc=planetexpress
 --eval SET GLOBAL authentication_ldap_simple_server_port = $MTR_LDAP_PORT
 
 # For debugging:
-#SET GLOBAL authentication_ldap_simple_log_status = 4;
+SET GLOBAL authentication_ldap_simple_log_status = 4;
 
 --replace_result $MTR_LDAP_HOST <MTR_LDAP_HOST> $MTR_LDAP_PORT <MTR_LDAP_PORT>
 SHOW GLOBAL VARIABLES LIKE 'authentication_ldap_simple%';

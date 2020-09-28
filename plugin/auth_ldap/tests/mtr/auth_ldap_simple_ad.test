@@ -7,18 +7,20 @@
 SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'authentication_ldap_simple%';
 --replace_result $MTR_LDAP_HOST <MTR_LDAP_HOST> $MTR_LDAP_PORT <MTR_LDAP_PORT>
 SHOW GLOBAL VARIABLES LIKE 'authentication_ldap_simple%';
-SET GLOBAL authentication_ldap_simple_bind_base_dn = 'CN=Users,dc=loctest,dc=hu';
+SET GLOBAL authentication_ldap_simple_bind_base_dn = 'CN=Users,dc=perconatest,dc=com';
 --replace_result $MTR_LDAP_HOST <MTR_LDAP_HOST>
 --eval SET GLOBAL authentication_ldap_simple_server_host = '$MTR_LDAP_HOST'
 --replace_result $MTR_LDAP_PORT <MTR_LDAP_PORT>
 --eval SET GLOBAL authentication_ldap_simple_server_port = $MTR_LDAP_PORT
+SET GLOBAL authentication_ldap_simple_tls=ON;
+SET GLOBAL authentication_ldap_simple_ca_path='/home/dutow/adssl/ca.crt';
 
 # For debugging:
-# SET GLOBAL authentication_ldap_simple_log_status = 4;
+SET GLOBAL authentication_ldap_simple_log_status = 4;
 
 --replace_result $MTR_LDAP_HOST <MTR_LDAP_HOST> $MTR_LDAP_PORT <MTR_LDAP_PORT>
 SHOW GLOBAL VARIABLES LIKE 'authentication_ldap_simple%';
-CREATE USER zoidberg IDENTIFIED WITH authentication_ldap_simple BY 'cn=zoidberg,cn=Users,dc=loctest,dc=hu';
+CREATE USER zoidberg IDENTIFIED WITH authentication_ldap_simple BY 'cn=zoidberg,cn=Users,dc=perconatest,dc=com';
 CREATE USER nonexistent IDENTIFIED WITH authentication_ldap_simple BY 'uid=nonexistent';
 
 --connect (con1,localhost,zoidberg,Bergzoid11,,,,CLEARTEXT)
@@ -62,7 +64,7 @@ DROP USER nonexistent;
 
 # Test search mode
 SET GLOBAL authentication_ldap_simple_user_search_attr = 'samAccountName';
-SET GLOBAL authentication_ldap_simple_bind_root_dn = 'cn=zoidberg,cn=Users,dc=loctest,dc=hu';
+SET GLOBAL authentication_ldap_simple_bind_root_dn = 'cn=zoidberg,cn=Users,dc=perconatest,dc=com';
 SET GLOBAL authentication_ldap_simple_bind_root_pwd = 'Bergzoid11';
 CREATE USER zoidberg IDENTIFIED WITH authentication_ldap_simple;
 --connect (con1,localhost,zoidberg,Bergzoid11,,,,CLEARTEXT)
