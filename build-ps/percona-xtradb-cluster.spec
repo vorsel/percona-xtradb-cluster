@@ -885,6 +885,10 @@ install -D -p -m 0644 packaging/rpm-common/mysqlrouter.conf.in %{buildroot}%{_sy
 
 #
 %{__rm} -f $RBR/%{_prefix}/README
+rm -rf $RBR/usr/include/kmip.h
+rm -rf $RBR/usr/include/kmippp.h
+rm -rf $RBR/usr/lib/libkmip.a
+rm -rf $RBR/usr/lib/libkmippp.a
 %if %{with tokudb}
 %{__rm} -f $RBR/%{_prefix}/README.md
 %{__rm} -f $RBR/%{_prefix}/COPYING.AGPLv3

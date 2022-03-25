@@ -232,6 +232,7 @@ get_sources(){
     rsync -av ${WORKDIR}/percona-xtradb-cluster/percona-xtradb-cluster-galera/ ${PXCDIR}/percona-xtradb-cluster-galera --exclude .git
     rsync -av ${WORKDIR}/percona-xtradb-cluster/wsrep-lib/ ${PXCDIR}/wsrep-lib --exclude .git
     rsync -av ${WORKDIR}/percona-xtradb-cluster/extra/coredumper/ ${PXCDIR}/extra/coredumper --exclude .git
+    rsync -av ${WORKDIR}/percona-xtradb-cluster/extra/libkmip/ ${PXCDIR}/extra/libkmip/ --exclude .git
 
     sed -i 's:ROUTER_RUNTIMEDIR:/var/run/mysqlrouter/:g' ${PXCDIR}/packaging/rpm-common/*
     cd ${PXCDIR}/packaging/rpm-common || exit
@@ -358,6 +359,7 @@ install_deps() {
         fi
         if [ "x${RHEL}" = "x7" ]; then
             yum -y install devtoolset-10
+            yum -y install cyrus-sasl-gssapi cyrus-sasl-gs2 cyrus-sasl-md5 cyrus-sasl-plain
             source /opt/rh/devtoolset-10/enable
         fi
          if [ "x${RHEL}" = "x6" ]; then
@@ -428,6 +430,7 @@ install_deps() {
         apt-get -y install libtool libnuma-dev scons libboost-dev libboost-program-options-dev check
         apt-get -y install doxygen doxygen-gui graphviz rsync libcurl4-openssl-dev
         apt-get -y install libcurl4-openssl-dev libre2-dev pkg-config libtirpc-dev libev-dev
+        apt-get -y install libudev-dev
         apt-get -y install --download-only percona-xtrabackup-24=2.4.24-1.${DIST}
         apt-get -y install --download-only percona-xtrabackup-80=8.0.26-18-1.${DIST}
     fi
